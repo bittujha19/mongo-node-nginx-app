@@ -65,12 +65,13 @@ You will receive below output.
 Below commands to check secrets and pvc:
 =======================================
 
-admins-MacBook-Pro-4:mongo-node-nginx-app bittujha$ kubectl get pvc
+$ kubectl get pvc
+
 NAME      STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   AGE
 mongodb   Bound    pvc-012810ce-65b6-46ac-b8e8-bfadacbae526   1Gi        RWO            standard       18m
 
+$ kubectl get secrets
 
-admins-MacBook-Pro-4:mongo-node-nginx-app bittujha$ kubectl get secrets
 NAME                                TYPE                                  DATA   AGE
 default-token-h8tmp                 kubernetes.io/service-account-token   3      29d
 mongodb                             Opaque                                7      18m
