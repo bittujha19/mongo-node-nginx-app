@@ -1,0 +1,86 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "nodeapp.fullname" . }}
+  labels:
+{{ include "nodeapp.labels" . | indent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "nodeapp.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "nodeapp.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              port: 80
+              containerPort: 3000
+              # targetPort: 3000
+              protocol: TCP
+          env:
+            - name: "MONGODB_ROOT_PASSWORD"
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb
+                  key: mongodb-root-password
+            - name: "DB_PASSWORD"
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb
+                  key: db-password
+            - name: "DB_USERNAME"
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb
+                  key: db-username
+            - name: "DB_DATABASE"
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb
+                  key: db-database
+            - name: "DB_PORT"
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb
+                  key: db-port
+            - name: "DB_HOST"
+              valueFrom:
+                secretKeyRef:
+                  name: mongodb
+                  key: db-host                                  
+          # livenessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          # readinessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+
