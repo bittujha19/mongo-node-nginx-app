@@ -8,9 +8,13 @@ but this application can be run on any Cloud Provider.
 #1 Please follow Below steps exactly to get this working on a Minikube Cluster:
 
 #git clone https://github.com/bittujha19/mongo-node-nginx-app.git
+
 #cd mongo-node-nginx-app
+
 #helm install --name mongodb mongodb/
+
 #helm install --name nginx-ingress nginx-ingress/
+
 #helm install --name nodeapp nodeapp/
 
 #### Running below command will output service endpoint details:
